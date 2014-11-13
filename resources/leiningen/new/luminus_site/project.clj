@@ -22,7 +22,7 @@
   :jvm-opts ["-server"]
   :plugins [[lein-environ "1.0.0"]
             [lein-ancient "0.5.5"]]
-  :profiles {:uberjar {:omit-source true, :env {:production true}, :aot :all},
+  :profiles {:uberjar {:omit-source true, :env {:prod true}, :aot :all},
              :prod {:env {:http-port "8080"
                           :repl-port "8000"}
                     :dependencies  [[org.clojure/tools.nrepl "0.2.5"]]},
