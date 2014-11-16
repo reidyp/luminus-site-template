@@ -1,24 +1,16 @@
 (ns {{name}}.db.core
-  (:use korma.core
-        [korma.db :only (defdb)])
-  (:require [{{name}}.db.schema :as schema]))
+  (:require [{{name}}.db.schema :refer [db-spec]]
+            [clojure.java.jdbc :as sql]))
 
-(defdb db schema/db-spec)
-
-(defentity users)
-
-(defn create-user [user]
-  (insert users
-          (values user)))
+(defn create-user [id-pass]
+  (sql/insert! db-spec :user_tbl id-pass))
 
 (defn update-user [id first-name last-name email]
-  (update users
-  (set-fields {:first_name first-name
-               :last_name last-name
-               :email email})
-  (where {:id id})))
+  (sql/update! db-spec :user_tbl
+               {:first_name first-name
+                :last_name last-name
+                :email email}
+               ["id = ?" id]))
 
 (defn get-user [id]
-  (first (select users
-                 (where {:id id})
-                 (limit 1))))
+  (first (sql/query db-spec ["SELECT * FROM user_tbl WHERE id = ? LIMIT 1" id])))

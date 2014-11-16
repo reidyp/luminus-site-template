@@ -4,9 +4,7 @@
  <ol>
    <li> Create the database for your application.
    <li> Update the connection parameters for the database in the <code>{{name}}.db.schema</code> namespace of your application.
-   <li> Update the connection URL in the <code>project.clj</code> under the <code>:ragtime</code> key with your database name and login.
-   <li> Run <code>lein ragtime migrate</code> in the root of the project to create the tables.
-   <li> Restart the application.
+   <li> Use the table schema defined in <code>{{name}}.db.schema/create-all-tables</code> to create the tables.
  </ol>
 </div>
 
