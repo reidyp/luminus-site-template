@@ -1,24 +1,24 @@
 (defproject {{name}} "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
-  :dependencies [[log4j "1.2.17" :exclusions [javax.mail/mail
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.danielsz/system "0.1.3"]
+                 [org.clojure/java.jdbc "0.3.6"]
+                 [org.postgresql/postgresql "9.3-1102-jdbc41"]
+                 [http-kit "2.1.18"]
+                 [lib-noir "0.9.4"]
+                 [com.taoensso/timbre "3.3.1"]
+                 [log4j "1.2.17" :exclusions [javax.mail/mail
                                               javax.jms/jms
                                               com.sun.jdmk/jmxtools
                                               com.sun.jmx/jmxri]]
                  [com.taoensso/tower "3.0.2"]
-                 [markdown-clj "0.9.55" :exclusions [com.keminglabs/cljx]]
-                 [http-kit "2.1.18"]
-                 [prone "0.6.0"]
                  [noir-exception "0.2.2"]
-                 [com.taoensso/timbre "3.3.1"]
+                 [prone "0.6.0"]
                  [selmer "0.7.2"]
-                 [org.clojure/java.jdbc "0.3.6"]
-                 [org.postgresql/postgresql "9.3-1102-jdbc41"]
-                 [lib-noir "0.9.4"]
-                 [org.clojure/clojure "1.6.0"]
-                 [environ "1.0.0"]
+                 [markdown-clj "0.9.55" :exclusions [com.keminglabs/cljx]]
                  [im.chit/cronj "1.4.2"]
-                 [org.danielsz/system "0.1.3"]]
+                 [environ "1.0.0"]]
   :jvm-opts ["-server"]
   :plugins [[lein-environ "1.0.0"]
             [lein-ancient "0.5.5"]]
