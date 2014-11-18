@@ -86,21 +86,25 @@
       ; Content-Type, Content-Length, and Last Modified headers for files in body
       (wrap-file-info)))
 
-(defrecord WebServer [port server handler init-fn destroy-fn]
+(defrecord WebServer [port handler stop-fn init-fn destroy-fn]
   component/Lifecycle
   (start [component]
-    (let [server (run-server handler {:port port})]
-      (init-fn)
-      (assoc component :server server)))
+    (let [stop-fn (run-server handler {:port port})]
+      (when init-fn
+        (init-fn))
+      (assoc component :stop-fn stop-fn)))
   (stop [component]
-    (destroy-fn)
-    (when server
-      (server)
+    (when destroy-fn
+      (destroy-fn))
+    (when stop-fn
+      (stop-fn)
       component)))
 
 (defn new-web-server
-  [port handler init-fn destroy-fn]
-  (map->WebServer {:port port
-                   :handler handler
-                   :init-fn init-fn
-                   :destroy-fn destroy-fn}))
+  ([port handler]
+   (map->WebServer {:port port :handler handler
+                    :init-fn nil :destroy-fn nil}))
+  ([port handler init-fn destroy-fn]
+   (map->WebServer {:port port :handler handler
+                    :init-fn init-fn
+                    :destroy-fn destroy-fn})))
