@@ -24,6 +24,7 @@
              [".gitignore" (render "gitignore")]
              ["project.clj" (render "project.clj" data)]
              ["README.md" (render "README.md" data)]
+             "logs"
              ["dev/user.clj" (render "user.clj" data)]
              ["src/{{sanitized}}/core.clj" (render "core.clj" data)]
              ["src/{{sanitized}}/db/core.clj" (render "db/core.clj" data)]
@@ -33,7 +34,6 @@
              ["src/{{sanitized}}/middleware.clj" (render "middleware.clj" data)]
              ["src/{{sanitized}}/routes/auth.clj" (render "routes/auth.clj" data)]
              ["src/{{sanitized}}/routes/home.clj" (render "routes/home.clj" data)]
-             ["src/{{sanitized}}/session_manager.clj" (render "session_manager.clj" data)]
              ["src/{{sanitized}}/systems.clj" (render "systems.clj" data)]
              ["src/{{sanitized}}/util.clj" (render "util.clj" data)]
              ["resources/log4j.properties" (render "log4j.properties")]

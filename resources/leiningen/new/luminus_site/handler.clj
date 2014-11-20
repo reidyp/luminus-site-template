@@ -2,8 +2,9 @@
   (:require [compojure.core :refer [defroutes]]
             [{{name}}.routes.home :refer [home-routes]]
             [{{name}}.middleware :refer [load-middleware]]
-            [{{name}}.session-manager :as session-manager]
             [noir.response :refer [redirect]]
+            [noir.session :refer [clear-expired-sessions]]
+            [cronj.core :refer [cronj]]
             [noir.util.middleware :refer [app-handler]]
             [ring.middleware.defaults :refer [site-defaults]]
             [ring.middleware.file :refer [wrap-file]]
@@ -19,25 +20,31 @@
             [com.stuartsierra.component :as component]
             [org.httpkit.server :refer [run-server]]))
 
-(defroutes
-  base-routes
+(defroutes base-routes
   (route/resources "/")
   (route/not-found "Not Found"))
 
+(def ^:private cleanup-job
+  (cronj :entries
+         [{:id "session-cleanup"
+           :handler (fn [_ _] (clear-expired-sessions))
+           :schedule "* /30 * * * * *"
+           :opts {}}]))
+
 (defn init
   []
-  (timbre/set-config!
-   [:appenders :rotor]
-   {:min-level :info,
-    :enabled? true,
-    :async? false,
-    :max-message-per-msecs nil,
-    :fn rotor/appender-fn})
-  (timbre/set-config!
-   [:shared-appender-config :rotor]
-   {:path "logs/{{sanitized}}.log", :max-size (* 512 1024), :backlog 10})
+  (timbre/set-config! [:appenders :rotor]
+                      {:min-level :info,
+                       :enabled? true,
+                       :async? false,
+                       :max-message-per-msecs nil,
+                       :fn rotor/appender-fn})
+  (timbre/set-config! [:shared-appender-config :rotor]
+                      {:path "logs/{{sanitized}}.log",
+                       :max-size (* 512 1024),
+                       :backlog 10})
   (if (env :dev) (parser/cache-off!))
-  (cronj/start! session-manager/cleanup-job)
+  (cronj/start! cleanup-job)
   (timbre/info
    "
 -=[ {{name}} started successfully at port"
@@ -50,11 +57,12 @@
   shuts down, put any clean up code here"
   []
   (timbre/info "{{name}} is shutting down...")
-  (cronj/shutdown! session-manager/cleanup-job)
+  (cronj/shutdown! cleanup-job)
   (timbre/info "shutdown complete!"))
 
-(def session-defaults
-  {:timeout (* 60 30), :timeout-response (redirect "/")})
+(def ^:private session-defaults
+  {:timeout (* 60 30),
+   :timeout-response (redirect "/")})
 
 (defn- mk-defaults
   "set to true to enable XSS protection"
@@ -63,17 +71,12 @@
       (update-in [:session] merge session-defaults)
       (assoc-in [:security :anti-forgery] xss-protection?)))
 
-(def app
-  (app-handler
-   [auth-routes home-routes base-routes]
-   :middleware
-   (load-middleware)
-   :ring-defaults
-   (mk-defaults false)
-   :access-rules
-   []
-   :formats
-   [:json-kw :edn :transit-json]))
+(def ^:private app
+  (app-handler [auth-routes home-routes base-routes]
+               :middleware (load-middleware)
+               :ring-defaults (mk-defaults false)
+               :access-rules []
+               :formats [:json-kw :edn :transit-json]))
 
 (defn get-handler []
   ;; #'app expands to (var app) so that when we reload our code,
