@@ -18,6 +18,7 @@
                  [selmer "0.7.2"]
                  [markdown-clj "0.9.55" :exclusions [com.keminglabs/cljx]]
                  [im.chit/cronj "1.4.2"]
+                 [mvxcvi/puget "0.6.4"]
                  [environ "1.0.0"]]
   :jvm-opts ["-server"]
   :plugins [[lein-environ "1.0.0"]

@@ -2,11 +2,17 @@
   (:require [taoensso.timbre :as timbre]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
+            [puget.printer :refer [cprint]]
             [selmer.middleware :refer [wrap-error-page]]
             [prone.middleware :refer [wrap-exceptions]]
             [noir-exception.core :refer [wrap-internal-error]]))
 
-(defn log-request [handler]
+(defn- print-request [handler]
+  (fn [req]
+    (cprint req)
+    (handler req)))
+
+(defn- log-request [handler]
   (fn [req]
     (timbre/debug req)
     (handler req)))
