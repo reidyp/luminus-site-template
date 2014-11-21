@@ -20,6 +20,7 @@
                  [im.chit/cronj "1.4.2"]
                  [mvxcvi/puget "0.6.4"]
                  [environ "1.0.0"]]
+  :repl-options {:init-ns user}
   :jvm-opts ["-server"]
   :plugins [[lein-environ "1.0.0"]
             [lein-ancient "0.5.5"]]

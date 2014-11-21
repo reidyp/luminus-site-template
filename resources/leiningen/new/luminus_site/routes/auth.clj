@@ -71,17 +71,19 @@
 
 (defroutes auth-routes
   (GET "/register" []
-       (register))
+    (register))
 
   (POST "/register" [id pass pass1]
-        (handle-registration id pass pass1))
+    (handle-registration id pass pass1))
 
-  (GET "/profile" [] (profile))
-  
-  (POST "/update-profile" {params :params} (update-profile params))
-  
+  (GET "/profile" []
+    (profile))
+
+  (POST "/update-profile" {params :params}
+    (update-profile params))
+
   (GET "/login" req
-        (handle-login (get-in req [:headers "authorization"])))
+    (handle-login (get-in req [:headers "authorization"])))
 
   (GET "/logout" []
-        (logout)))
+    (logout)))
